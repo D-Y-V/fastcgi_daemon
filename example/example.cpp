@@ -1,4 +1,4 @@
-#include "settings.h"
+//#include "settings.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -14,7 +14,8 @@
 #ifdef HAVE_DMALLOC_H
 #include <dmalloc.h>
 #endif
-
+#include <sstream>
+#include <any>
 namespace example
 {
 
@@ -70,13 +71,13 @@ ExampleHandler::onUnload() {
 void
 ExampleHandler::handleRequest(fastcgi::Request *req, fastcgi::HandlerContext *handlerContext) {
 
-//	std::cout << req->countArgs() << ":" << req->getArg("a") << std::endl;
-//	std::cout << "QUERY_STRING=" << req->getQueryString() << std::endl;
+	std::cout << req->countArgs() << ":" << req->getArg("a") << std::endl;
+	std::cout << "QUERY_STRING=" << req->getQueryString() << std::endl;
 
-//	req->setContentType("text/plain");
+	req->setContentType("text/plain");
 	fastcgi::RequestStream stream(req);
 
-/*	std::vector<std::string> names;
+	std::vector<std::string> names;
 	req->argNames(names);
 	for (std::vector<std::string>::iterator i = names.begin(), end = names.end(); i != end; ++i) {
 		stream << "arg " << (*i) << " has value " << req->getArg(*i) << "\n";
@@ -88,15 +89,15 @@ ExampleHandler::handleRequest(fastcgi::Request *req, fastcgi::HandlerContext *ha
 	req->cookieNames(names);
 	for (std::vector<std::string>::iterator i = names.begin(), end = names.end(); i != end; ++i) {
 		stream << "cookie " << (*i) << " has value " << req->getCookie(*i) << "\n";
-	}*/
+	}
 
 	stream << "test not ok\n";
 
-//	logger_->info("request processed");
+	logger_->info("request processed");
 
 	req->setStatus(200);
 
-//	handlerContext->setParam("param1", std::string("hi!"));
+	handlerContext->setParam("param1", std::string("hi!"));
 }
 
 ExampleHandler2::ExampleHandler2(fastcgi::ComponentContext *context) : fastcgi::Component(context) {
@@ -117,30 +118,30 @@ ExampleHandler2::onUnload() {
 
 void
 ExampleHandler2::handleRequest(fastcgi::Request *req, fastcgi::HandlerContext *handlerContext) {
-	boost::any param1 = handlerContext->getParam("param1");
-	boost::any param2 = handlerContext->getParam("param2");
+	std::any param1 = handlerContext->getParam("param1");
+	std::any param2 = handlerContext->getParam("param2");
 
-	if (param1.empty()) {
+	if (!param1.has_value()) {
 		std::cout << "param1 not found" << std::endl;
 	} else {
 		try {
-			//std::cout << "value of param1 = " << boost::any_cast<std::string>(param1) << std::endl;
-		} catch (const boost::bad_any_cast &) {
-			//std::cout << "bad_any_cast: param1 is not string" << std::endl;
+			std::cout << "value of param1 = " << std::any_cast<std::string>(param1) << std::endl;
+		} catch (const std::bad_any_cast &) {
+			std::cout << "bad_any_cast: param1 is not string" << std::endl;
 		}
 	}
 
-	if (param2.empty()) {
-		//std::cout << "param2 not found" << std::endl;
+	if (!param2.has_value()) {
+		std::cout << "param2 not found" << std::endl;
 	} else {
-		//std::cout << "param1 found" << std::endl;
+		std::cout << "param1 found" << std::endl;
 	}
 
 	if (req->getScriptName() == "/upload" && req->getRequestMethod() == "POST") {
 		fastcgi::DataBuffer f = req->remoteFile("file");
 		std::string file;
 		f.toString(file);
-		//std::cout << "file=\n" << file << std::endl;
+		std::cout << "file=\n" << file << std::endl;
 	}
 }
 
