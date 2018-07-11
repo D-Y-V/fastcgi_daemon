@@ -23,7 +23,7 @@
 #include "details/range.h"
 #include "details/functors.h"
 
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
 
 #include <iosfwd>
 #include <map>
@@ -36,7 +36,7 @@ class File;
 class Logger;
 class RequestImpl;
 
-class Parser : private boost::noncopyable {
+class Parser  {
 public:
 	static const char* statusToString(short status);
 	static std::string getBoundary(const Range &range);
@@ -70,6 +70,12 @@ public:
 	static const Range HEADER_RANGE;
 	static const Range COOKIE_RANGE;
 	static const Range CONTENT_TYPE_RANGE;
+
+private:
+	Parser(const Parser&) = delete;
+	Parser&operator=(const Parser&) = delete;
+
+
 };
 
 template<typename Map> inline bool

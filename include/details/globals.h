@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+//#include <boost/noncopyable.hpp>
+//#include <boost/shared_ptr.hpp>
 
 #include <map>
 #include <string>
@@ -33,14 +33,14 @@ class Loader;
 class Logger;
 class RequestsThreadPool;
 
-class Globals : private boost::noncopyable {
+class Globals  {
 public:
 	Globals(const Config *config);
 	virtual ~Globals();
 
 	const Config* config() const;
 
-	typedef std::map<std::string, boost::shared_ptr<RequestsThreadPool> > ThreadPoolMap;
+	typedef std::map<std::string, std::shared_ptr<RequestsThreadPool> > ThreadPoolMap;
 
 	ComponentSet* components() const;
 	HandlerSet* handlers() const;
@@ -59,10 +59,14 @@ private:
 private:
 	ThreadPoolMap pools_;
 	const Config* config_;
-	std::auto_ptr<Loader> loader_;
-	std::auto_ptr<HandlerSet> handlerSet_;
-	std::auto_ptr<ComponentSet> componentSet_;
+	std::unique_ptr<Loader> loader_;
+	std::unique_ptr<HandlerSet> handlerSet_;
+	std::unique_ptr<ComponentSet> componentSet_;
 	Logger* logger_;
+
+private:
+	Globals(const Globals&) = delete;
+	Globals&operator=(const Globals&) = delete;
 };
 
 } // namespace fastcgi

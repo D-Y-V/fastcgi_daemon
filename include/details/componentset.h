@@ -22,7 +22,7 @@
 #include <map>
 #include <vector>
 
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
 
 namespace fastcgi {
 
@@ -31,7 +31,7 @@ class Loader;
 class Component;
 class ComponentContext;
 
-class ComponentSet : private boost::noncopyable {
+class ComponentSet  {
 protected:
 	struct ComponentContainer {
 		ComponentContainer();
@@ -63,6 +63,10 @@ private:
 	ComponentMap components_;
 	std::vector<std::string> loadingStack_;
 	const Globals *globals_;
+
+private:
+    ComponentSet(const ComponentSet&) = delete;
+    ComponentSet&operator=(const ComponentSet&) = delete;
 };
 
 } // namespace fastcgi

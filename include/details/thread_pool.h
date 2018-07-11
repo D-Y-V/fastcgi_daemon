@@ -18,11 +18,11 @@
 
 #pragma once
 
-#include <boost/bind.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/lexical_cast.hpp>
-
+//#include <boost/bind.hpp>
+//#include <boost/noncopyable.hpp>
+//#include <boost/shared_ptr.hpp>
+//#include <boost/lexical_cast.hpp>
+#include <functional>
 #include <condition_variable>
 #include <mutex>
 #include <queue>
@@ -42,10 +42,10 @@ struct ThreadPoolInfo
 };
 
 template<typename T>
-class ThreadPool : private boost::noncopyable {
+class ThreadPool {
 public:
-	typedef T TaskType;
-	typedef std::function<void ()> InitFuncType;
+	using TaskType = T;
+	using InitFuncType = std::function<void()>;
 
 public:
 	ThreadPool(const unsigned threadsNumber, const unsigned queueLength)
@@ -73,7 +73,7 @@ public:
 //			throw std::runtime_error("Invalid thread pool state.");
 //		}
 
-		std::function<void()> f = boost::bind(&ThreadPool<T>::workMethod, this, func);
+		std::function<void()> f = std::bind(&ThreadPool<T>::workMethod, this, func);
 		for (unsigned i = 0; i < info_.threadsNumber; ++i) {
 			threads_.emplace_back(f);
 		}
@@ -105,7 +105,7 @@ public:
 
 			if (tasksQueue_.size() >= info_.queueLength) {
 				throw std::runtime_error("Pool::handle: the queue has already reached its maximum size of "
-						+ boost::lexical_cast<std::string>(info_.queueLength) + " elements");
+						+ std::to_string(info_.queueLength) + " elements");
 			}
 			tasksQueue_.push(task);
 		} catch (...) {
@@ -186,6 +186,13 @@ private:
 	std::vector<std::thread> threads_;
 	std::queue<T> tasksQueue_;
 	mutable ThreadPoolInfo info_;
+
+
+private:
+	ThreadPool(const ThreadPool&) = delete;
+	ThreadPool&operator=(const ThreadPool&) = delete;
+
+
 };
 
 } // namespace fastcgi

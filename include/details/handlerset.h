@@ -18,13 +18,14 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <map>
 #include <set>
 
-#include <boost/utility.hpp>
-#include <boost/regex.hpp>
+//#include <boost/utility.hpp>
+//#include <boost/regex.hpp>
 
 namespace fastcgi {
 
@@ -34,11 +35,11 @@ class Handler;
 class Request;
 class RequestFilter;
 
-class HandlerSet : private boost::noncopyable
+class HandlerSet
 {
 public:
 	struct HandlerDescription {
-		typedef std::vector<std::pair<std::string, boost::shared_ptr<RequestFilter> > > FilterArray;
+		typedef std::vector<std::pair<std::string, std::shared_ptr<RequestFilter> > > FilterArray;
 		FilterArray filters;
 		std::vector<Handler*> handlers;
 		std::string poolName;
@@ -58,6 +59,13 @@ public:
 
 private:
 	HandlerArray handlers_;
+
+
+private:
+	HandlerSet(const HandlerSet&) = delete;
+	HandlerSet&operator=(const HandlerSet&) = delete;
+
+
 };
 
 } // namespace fastcgi

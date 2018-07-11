@@ -12,10 +12,13 @@
 #include <fcntl.h>
 #include <time.h>
 
-#include <boost/bind.hpp>
+//#include <boost/bind.hpp>
 
 #include "fastcgi2/component_factory.h"
 #include "fastcgi2/config.h"
+#include <functional>
+#include <unistd.h>
+
 
 #ifdef HAVE_DMALLOC_H
 #include <dmalloc.h>
@@ -29,7 +32,7 @@ FileLogger::FileLogger(ComponentContext *context) : Component(context),
         openMode_(S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH),
         print_level_(true), print_time_(true),
         fd_(-1), stopping_(false),
-        writingThread_(boost::bind(&FileLogger::writingThread, this))
+        writingThread_(std::bind(&FileLogger::writingThread, this))
 {
     const Config *config = context->getConfig();
     const std::string componentXPath = context->getComponentXPath();

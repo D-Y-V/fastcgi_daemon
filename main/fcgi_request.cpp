@@ -8,10 +8,10 @@
 
 #include "details/response_time_statistics.h"
 
-#include <boost/lexical_cast.hpp>
+//#include <boost/lexical_cast.hpp>
 
 #include <cstring>
-
+#include <sstream>
 #ifdef HAVE_DMALLOC_H
 #include <dmalloc.h>
 #endif
@@ -20,7 +20,7 @@ namespace fastcgi {
 
 static const std::string DAEMON_STRING = "fastcgi-daemon";
 
-FastcgiRequest::FastcgiRequest(boost::shared_ptr<Request> request, Endpoint *endpoint,
+FastcgiRequest::FastcgiRequest(std::shared_ptr<Request> request, Endpoint *endpoint,
         Logger *logger, ResponseTimeStatistics *statistics, const bool logTimes) :
     request_(request), logger_(logger), endpoint_(endpoint),
     statistics_(statistics), logTimes_(logTimes), handler_(NULL)
@@ -31,7 +31,7 @@ FastcgiRequest::FastcgiRequest(boost::shared_ptr<Request> request, Endpoint *end
 }
 
 FastcgiRequest::~FastcgiRequest() {
-    boost::uint64_t microsec = 0;
+    std::uint64_t microsec = 0;
     if (logTimes_ || statistics_) {
         gettimeofday(&finish_time_, NULL);
 

@@ -26,11 +26,11 @@ namespace fastcgi {
 
 class HandlerContextImpl : public HandlerContext {
 public:
-    virtual boost::any getParam(const std::string &name) const;
-    virtual void setParam(const std::string &name, const boost::any &value);
+    virtual std::any getParam(const std::string &name) const;
+    virtual void setParam(const std::string &name, const std::any &value);
 
 private:
-    typedef std::map<std::string, boost::any> ParamsMapType;
+    typedef std::map<std::string, std::any> ParamsMapType;
     ParamsMapType params_;
 };
 

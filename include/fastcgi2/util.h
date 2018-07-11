@@ -20,7 +20,7 @@
 
 #include <string>
 #include <vector>
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
 
 #include <fastcgi2/data_buffer.h>
 
@@ -28,7 +28,7 @@ namespace fastcgi {
 
 class Range;
 
-class StringUtils : private boost::noncopyable {
+class StringUtils  {
 public:
 	static std::string urlencode(const Range &val);
 	static std::string urlencode(const std::string &val);
@@ -50,9 +50,16 @@ private:
 
 	StringUtils();
 	virtual ~StringUtils();
+
+private:
+	StringUtils(const StringUtils&) = delete;
+	StringUtils&operator=(const StringUtils&) = delete;
+
+
+
 };
 
-class HttpDateUtils : private boost::noncopyable {
+class HttpDateUtils  {
 public:
 	static time_t parse(const char *value);
 	static std::string format(time_t value);
@@ -60,6 +67,12 @@ public:
 private:
 	HttpDateUtils();
 	virtual ~HttpDateUtils();
+
+private:
+	HttpDateUtils(const HttpDateUtils&) = delete;
+	HttpDateUtils&operator=(const HttpDateUtils&) = delete;
+
+
 };
 
 } // namespace fastcgi

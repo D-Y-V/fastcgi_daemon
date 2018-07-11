@@ -18,12 +18,14 @@
 
 #pragma once
 
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
+
+#include <string>
 #include <cstdarg>
 
 namespace fastcgi {
 
-class Logger : private boost::noncopyable {
+class Logger  {
 public:
 	enum Level {
 		DEBUG, INFO, ERROR, EMERGENCY
@@ -55,6 +57,12 @@ protected:
 
 private:
 	Level level_;
+
+private:
+    Logger(const Logger&) = delete;
+    Logger&operator=(const Logger&) = delete;
+
+
 };
 
 class LoggerRequestId {

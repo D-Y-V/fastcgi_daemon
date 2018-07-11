@@ -13,15 +13,15 @@ namespace fastcgi
 HandlerContext::~HandlerContext() {
 }
 	
-boost::any HandlerContextImpl::getParam(const std::string &name) const {
+std::any HandlerContextImpl::getParam(const std::string &name) const {
 	ParamsMapType::const_iterator itr = params_.find(name);
 	if (itr != params_.end()) {
 		return itr->second;
 	}
-	return boost::any();
+	return std::any();
 }
 
-void HandlerContextImpl::setParam(const std::string &name, const boost::any &value) {
+void HandlerContextImpl::setParam(const std::string &name, const std::any &value) {
 	params_[name] = value;
 }
 	

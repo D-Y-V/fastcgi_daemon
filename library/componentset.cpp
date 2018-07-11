@@ -4,6 +4,8 @@
 #include <vector>
 #include <stdexcept>
 
+#include <algorithm>
+
 #include "fastcgi2/config.h"
 #include "fastcgi2/component.h"
 #include "fastcgi2/component_factory.h"
@@ -71,7 +73,7 @@ ComponentSet::add(const std::string &name, const std::string &type,
         throw std::runtime_error("Cannot find component factory for type: " + type);
     }
     ComponentContainer c;
-    std::auto_ptr<ComponentContext> ctx(new ComponentContextImpl(globals_, componentXPath));
+    std::unique_ptr<ComponentContext> ctx(new ComponentContextImpl(globals_, componentXPath));
     try {
         c.component = factory->createComponent(ctx.get());
     }

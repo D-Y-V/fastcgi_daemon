@@ -13,6 +13,9 @@
 #include "fcgi_server.h"
 #include "fastcgi2/config.h"
 #include "details/globals.h"
+#include <unistd.h>
+#include <sstream>
+#include <cstring>
 
 #ifdef HAVE_DMALLOC_H
 #include <dmalloc.h>
@@ -102,9 +105,9 @@ main(int argc, char *argv[]) {
 			}
 		}
 
-		boost::scoped_ptr<Config> config(Config::create(argc, argv));
+		std::unique_ptr<Config> config(Config::create(argc, argv));
 		FCGIServer::writePid(*config);
-		boost::shared_ptr<Globals> globals(new Globals(config.get()));
+		std::shared_ptr<Globals> globals(new Globals(config.get()));
 		FCGIServer server(globals);
 		::server = &server;
 		setUpSignalHandlers();

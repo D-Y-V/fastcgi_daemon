@@ -5,9 +5,10 @@
 #include <algorithm>
 #include <map>
 #include <string.h>
-#include <boost/bind.hpp>
+//#include <boost/bind.hpp>
 
 #include <dlfcn.h>
+#include <functional>
 
 #include "details/loader.h"
 #include "fastcgi2/config.h"
@@ -25,7 +26,7 @@ Loader::Loader()
 }
 
 Loader::~Loader() {
-	std::for_each(handles_.rbegin(), handles_.rend(), boost::bind(&dlclose, _1));
+	std::for_each(handles_.rbegin(), handles_.rend(), std::bind(&dlclose, std::placeholders::_1));
 }
 
 void

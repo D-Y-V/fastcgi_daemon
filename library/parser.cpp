@@ -7,7 +7,7 @@
 #include <iterator>
 #include <algorithm>
 #include <stdexcept>
-#include <boost/bind.hpp>
+//#include <boost/bind.hpp>
 
 #include "fastcgi2/logger.h"
 

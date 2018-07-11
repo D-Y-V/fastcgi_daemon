@@ -23,15 +23,15 @@
 #include <string>
 #include <vector>
 
-#include <boost/utility.hpp>
-#include <boost/shared_ptr.hpp>
+//#include <boost/utility.hpp>
+//#include <boost/shared_ptr.hpp>
 
 namespace fastcgi {
 
 class Config;
 class ComponentFactory;
 
-class Loader : private boost::noncopyable
+class Loader
 {
 public:
     Loader();
@@ -47,6 +47,10 @@ protected:
 private:
     std::vector<void*> handles_;
     FactoryMap factories_;
+
+private:
+    Loader(const Loader&) = delete;
+    Loader&operator=(const Loader&) = delete;
 };
 
 } // namespace fastcgi

@@ -12,3 +12,4 @@
 configure
 Makefile
 Makefile.in
+.idea*

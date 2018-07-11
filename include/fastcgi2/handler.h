@@ -18,12 +18,13 @@
 
 #pragma once
 
-#include <boost/any.hpp>
-#include <boost/utility.hpp>
+//#include <boost/any.hpp>
+//#include <boost/utility.hpp>
 
 #include <map>
 #include <string>
 #include <vector>
+#include <any>
 
 namespace fastcgi {
 
@@ -33,17 +34,23 @@ class HandlerContext {
 public:
     virtual ~HandlerContext();
 
-    virtual boost::any getParam(const std::string &name) const = 0;
-    virtual void setParam(const std::string &name, const boost::any &value) = 0;
+    virtual std::any getParam(const std::string &name) const = 0;
+    virtual void setParam(const std::string &name, const std::any &value) = 0;
 };
 
-class Handler : private boost::noncopyable {
+class Handler {
 public:
     Handler();
     virtual ~Handler();
 
     virtual void onThreadStart();
     virtual void handleRequest(Request *req, HandlerContext *context) = 0;
+
+private:
+    Handler(const Handler&) = delete;
+    Handler&operator=(const Handler&) = delete;
+
+
 };
 
 } // namespace fastcgi

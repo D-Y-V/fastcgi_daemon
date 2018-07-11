@@ -2,7 +2,7 @@
 
 #include "details/request_filter.h"
 
-#include <boost/lexical_cast.hpp>
+//#include <boost/lexical_cast.hpp>
 
 #include "fastcgi2/request.h"
 
@@ -21,7 +21,7 @@ RegexFilter::~RegexFilter()
 
 bool
 RegexFilter::check(const std::string &value) const {
-    return boost::regex_match(value, regex_);
+    return std::regex_match(value, regex_);
 }
 
 UrlFilter::UrlFilter(const std::string &regex) : regex_(regex)
@@ -55,7 +55,7 @@ PortFilter::~PortFilter()
 
 bool
 PortFilter::check(const Request *request) const {
-    std::string port = boost::lexical_cast<std::string>(request->getServerPort());
+    std::string port = std::to_string(request->getServerPort());
     return regex_.check(port);
 }
 

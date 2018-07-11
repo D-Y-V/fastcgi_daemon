@@ -25,7 +25,8 @@
 
 #include <libxml/tree.h>
 
-#include <boost/regex.hpp>
+//#include <boost/regex.hpp>
+#include <regex>
 
 #include <map>
 
@@ -45,8 +46,8 @@ public:
 	virtual void subKeys(const std::string &value, std::vector<std::string> &v) const;
 
 private:
-	XmlConfig(const XmlConfig &);
-	XmlConfig& operator = (const XmlConfig &);
+	XmlConfig(const XmlConfig &) = delete;
+	XmlConfig& operator = (const XmlConfig &) = delete;
 
 	void findVariables(const XmlDocHelper &doc);
 	void resolveVariables(std::string &val) const;
@@ -54,7 +55,7 @@ private:
 
 private:
 	XmlDocHelper doc_;
-	boost::regex regex_;
+	std::regex regex_;
 	std::map<std::string, std::string> vars_;
 };
 

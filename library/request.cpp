@@ -1,6 +1,6 @@
 #include "settings.h"
 
-#include <boost/current_function.hpp>
+//#include <boost/current_function.hpp>
 
 #include "fastcgi2/request.h"
 #include "details/requestimpl.h"

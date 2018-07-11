@@ -20,7 +20,7 @@
 
 #include <fastcgi2/data_buffer.h>
 
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
 
 #include <string>
 #include <vector>
@@ -34,7 +34,7 @@ class RequestCache;
 class RequestIOStream;
 class RequestImpl;
 
-class Request : private boost::noncopyable {
+class Request {
 public:
     Request(Logger *logger, RequestCache *cache);
     ~Request();
@@ -121,7 +121,13 @@ public:
     void flush();
 
 private:
-    std::auto_ptr<RequestImpl> impl_;
+    std::unique_ptr<RequestImpl> impl_;
+
+private:
+    Request(const Request&) = delete;
+    Request&operator=(const Request&) = delete;
+
+
 };
 
 } // namespace fastcgi

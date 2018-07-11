@@ -21,13 +21,13 @@
 #include "details/handlerset.h"
 #include "details/request_thread_pool.h"
 
-#include <boost/noncopyable.hpp>
+//#include <boost/noncopyable.hpp>
 
 namespace fastcgi {
 
 class Globals;
 
-class Server : private boost::noncopyable {
+class Server {
 public:
     Server();
     virtual ~Server();
@@ -39,6 +39,12 @@ protected:
 
     void handleRequestInternal(const HandlerSet::HandlerDescription* handler, RequestTask task);
     const HandlerSet::HandlerDescription* getHandler(RequestTask task) const;
+
+private:
+    Server(const Server&) = delete;
+    Server& operator = (const Server&) = delete;
+
+
 };
 
 } // namespace fastcgi

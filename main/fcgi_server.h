@@ -2,7 +2,7 @@
 
 #include "details/server.h"
 
-#include <boost/thread.hpp>
+//#include <boost/thread.hpp>
 
 #include <mutex>
 #include <map>
@@ -68,7 +68,7 @@ protected:
 	enum Status {NOT_INITED, LOADING, RUNNING};
 
 public:
-	FCGIServer(boost::shared_ptr<Globals> globals);
+	FCGIServer(std::shared_ptr<Globals> globals);
 	virtual ~FCGIServer();
 
 	static void writePid(const Config& config);
@@ -99,13 +99,13 @@ private:
 	Status status() const;
 
 private:
-	boost::shared_ptr<Globals> globals_;
-	boost::shared_ptr<ServerStopper> stopper_;
+	std::shared_ptr<Globals> globals_;
+	std::shared_ptr<ServerStopper> stopper_;
 
 	typedef char ThreadHolder;
-	boost::shared_ptr<ThreadHolder> active_thread_holder_;
+	std::shared_ptr<ThreadHolder> active_thread_holder_;
 
-	std::vector<boost::shared_ptr<Endpoint> > endpoints_;
+	std::vector<std::shared_ptr<Endpoint> > endpoints_;
 	int monitorSocket_;
 
 	RequestCache *request_cache_;
@@ -114,12 +114,13 @@ private:
 	mutable std::mutex statusInfoMutex_;
 	Status status_;
 
-	std::auto_ptr<boost::thread> monitorThread_;
-	std::auto_ptr<boost::thread> stopThread_;
+	std::unique_ptr<std::thread> monitorThread_;
+	std::unique_ptr<std::thread> stopThread_;
 	int stopPipes_[2];
 
 	bool logTimes_;
-	boost::thread_group globalPool_;
+	std::vector<std::unique_ptr<std::thread>> globalPool_;
+
 };
 
 } // namespace fastcgi

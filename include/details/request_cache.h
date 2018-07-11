@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include <boost/cstdint.hpp>
-#include <boost/noncopyable.hpp>
+//#include <boost/cstdint.hpp>
+//#include <boost/noncopyable.hpp>
 
 #include <time.h>
 
@@ -28,14 +28,22 @@ namespace fastcgi {
 class DataBuffer;
 class Request;
 
-class RequestCache : private boost::noncopyable {
+class RequestCache  {
 public:
     RequestCache() {};
     virtual ~RequestCache() {};
 
     virtual DataBuffer create() = 0;
     virtual void save(Request *request, time_t delay) = 0;
-    virtual boost::uint32_t minPostSize() const = 0;
+    virtual std::uint32_t minPostSize() const = 0;
+
+
+private:
+    RequestCache(const RequestCache &) = delete;
+    RequestCache& operator = (const RequestCache &) = delete;
+
+
+
 };
 
 } // namespace fastcgi

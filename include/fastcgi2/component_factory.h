@@ -21,7 +21,7 @@
 #include <string>
 #include <map>
 
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
 
 namespace fastcgi {
 
@@ -31,11 +31,16 @@ class ComponentContext;
 
 typedef std::map<std::string, ComponentFactory*> FactoryMap;
 
-class ComponentFactory : private boost::noncopyable {
+class ComponentFactory  {
 public:
 	ComponentFactory();
 	virtual ~ComponentFactory();
 	virtual Component* createComponent(ComponentContext *context) = 0;
+
+
+private:
+	ComponentFactory(const ComponentFactory&) = delete;
+	ComponentFactory&operator=(const ComponentFactory&) = delete;
 };
 
 template<typename T>

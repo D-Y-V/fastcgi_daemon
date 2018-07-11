@@ -198,7 +198,7 @@ RequestTest::testMultipartNImpl(RequestCache *cache) {
 	CPPUNIT_ASSERT_EQUAL(true, req->hasFile("uploaded"));
 	DataBuffer file = req->remoteFile("uploaded");
 
-	CPPUNIT_ASSERT_EQUAL((boost::uint64_t)887, file.size());
+	CPPUNIT_ASSERT_EQUAL((std::uint64_t)887, file.size());
 }
 
 void
@@ -222,7 +222,7 @@ RequestTest::testMultipartRNImpl(RequestCache *cache) {
 	
 	CPPUNIT_ASSERT_EQUAL(true, req->hasFile("uploaded"));
 	DataBuffer file = req->remoteFile("uploaded");
-	CPPUNIT_ASSERT_EQUAL((boost::uint64_t)887, file.size());
+	CPPUNIT_ASSERT_EQUAL((std::uint64_t)887, file.size());
 }
 
 void

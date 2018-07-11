@@ -29,7 +29,7 @@ Member functions:
 
 ```
 DataBuffer();
-DataBuffer(DataBuffer buffer, boost::uint64_t begin, boost::uint64_t end)
+DataBuffer(DataBuffer buffer, std::uint64_t begin, std::uint64_t end)
 ```
 
 **Parameters**
@@ -44,7 +44,7 @@ DataBuffer(DataBuffer buffer, boost::uint64_t begin, boost::uint64_t end)
 Returns a symbol.
 
 ```
-char at(boost::uint64_t pos) const
+char at(std::uint64_t pos) const
 ```
 
 **Parameters**
@@ -72,7 +72,7 @@ bool empty() const
 Returns size of a buffer in bytes.
 
 ```
-boost::uint64_t size() const
+std::uint64_t size() const
 ```
 
 **Return value**
@@ -83,7 +83,7 @@ Size of a buffer in bytes.
 Changes size of a buffer.
 
 ```
-void resize(boost::uint64_t size)
+void resize(std::uint64_t size)
 ```
 
 **Parameters**
@@ -129,7 +129,7 @@ Trimmed DataBuffer.
 Returns fragment from a buffer.
 
 ```
-DataBuffer trimn(boost::uint64_t b, boost::uint64_t e) const
+DataBuffer trimn(std::uint64_t b, std::uint64_t e) const
 ```
 
 **Parameters**
@@ -248,7 +248,7 @@ void toString(std::string &str) const
 Reads data from a buffer.
 
 ```
-boost::uint64_t read(boost::uint64_t pos, char *data, boost::uint64_t len)
+std::uint64_t read(std::uint64_t pos, char *data, std::uint64_t len)
 ```
 
 **Parameters**
@@ -267,7 +267,7 @@ Number of bytes read.
 Writes data to buffer.
 
 ```
-boost::uint64_t write(boost::uint64_t pos, const char *data, boost::uint64_t len)
+std::uint64_t write(std::uint64_t pos, const char *data, std::uint64_t len)
 ```
 
 **Parameters**
@@ -286,7 +286,7 @@ Number of bytes actually written.
 Returns number of the first byte in buffer.
 
 ```
-boost::uint64_t beginIndex() const
+std::uint64_t beginIndex() const
 ```
 
 **Return value**
@@ -297,7 +297,7 @@ Number of the first byte.
 Returns number of the last byte in a buffer.
 
 ```
-boost::uint64_t endIndex() const
+std::uint64_t endIndex() const
 ```
 
 **Return value**

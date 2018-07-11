@@ -6,11 +6,11 @@
 #include <stdexcept>
 #include <algorithm>
 
-#include <boost/ref.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
-#include <boost/checked_delete.hpp>
-#include <boost/current_function.hpp>
+//#include <boost/ref.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/function.hpp>
+//#include <boost/checked_delete.hpp>
+//#include <boost/current_function.hpp>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -19,6 +19,9 @@
 #include <sys/poll.h>
 #include <netinet/in.h>
 #include <sys/time.h>
+#include <cstring>
+
+#include <functional>
 
 #include "endpoint.h"
 #include "fcgi_request.h"
@@ -50,7 +53,7 @@
 namespace fastcgi
 {
 
-FCGIServer::FCGIServer(boost::shared_ptr<Globals> globals) :
+FCGIServer::FCGIServer(std::shared_ptr<Globals> globals) :
 	globals_(globals), stopper_(new ServerStopper()), active_thread_holder_(new char(0)),
 	monitorSocket_(-1), request_cache_(NULL), time_statistics_(NULL), status_(NOT_INITED)
 {}
@@ -106,7 +109,7 @@ FCGIServer::start() {
 	if (-1 == pipe(stopPipes_)) {
 		throw std::runtime_error("Cannot create stop signal pipes");
 	}
-	stopThread_.reset(new boost::thread(boost::bind(&FCGIServer::stopThreadFunction, this)));
+	stopThread_.reset(new std::thread(std::bind(&FCGIServer::stopThreadFunction, this)));
 }
 
 void
@@ -165,7 +168,7 @@ FCGIServer::initMonitorThread() {
 
 	int one = 1;
 	if (-1 == setsockopt (monitorSocket_, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one))) {
-		throw std::runtime_error("Cannot reuse monitor port: " + boost::lexical_cast<std::string>(errno));
+		throw std::runtime_error("Cannot reuse monitor port: " + std::to_string(errno));
 	}
 
 	sockaddr_in addr;
@@ -182,7 +185,7 @@ FCGIServer::initMonitorThread() {
 		throw std::runtime_error("Cannot listen monitor port");
 	}
 
-	monitorThread_.reset(new boost::thread(boost::bind(&FCGIServer::monitor, this)));
+	monitorThread_.reset(new std::thread(std::bind(&FCGIServer::monitor, this)));
 }
 
 void
@@ -218,12 +221,13 @@ FCGIServer::initTimeStatistics() {
 
 void
 FCGIServer::createWorkThreads() {
-	for (std::vector<boost::shared_ptr<Endpoint> >::iterator i = endpoints_.begin();
+	for (std::vector<std::shared_ptr<Endpoint> >::iterator i = endpoints_.begin();
 		 i != endpoints_.end();
 		 ++i) {
-		boost::function<void()> f = boost::bind(&FCGIServer::handle, this, i->get());
+		std::function<void()> f = std::bind(&FCGIServer::handle, this, i->get());
 		for (unsigned short t = 0; t < (*i)->threads(); ++t) {
-			globalPool_.create_thread(f);
+			//globalPool_.create_thread(f);
+			        globalPool_.push_back(std::make_unique<std::thread>(f));
 		}
 	}
 }
@@ -236,12 +240,14 @@ FCGIServer::initFastCGISubsystem() {
 
 	std::vector<std::string> v;
 	globals_->config()->subKeys("/fastcgi/daemon/endpoint", v);
-	for (std::vector<std::string>::iterator i = v.begin(), end = v.end(); i != end; ++i) {
-		boost::shared_ptr<Endpoint> endpoint(new Endpoint(
-			globals_->config()->asString(*i + "/socket", ""),
-			globals_->config()->asString(*i + "/port", ""),
-			boost::lexical_cast<unsigned>(globals_->config()->asString(*i + "/threads"))));
-		const int backlog = globals_->config()->asInt(*i + "/backlog", SOMAXCONN);
+
+
+	for (auto &i : v) {
+		std::shared_ptr<Endpoint> endpoint(new Endpoint(
+			globals_->config()->asString(i + "/socket", ""),
+			globals_->config()->asString(i + "/port", ""),
+			std::stoi(globals_->config()->asString(i + "/threads"))));
+		const int backlog = globals_->config()->asInt(i + "/backlog", SOMAXCONN);
 		endpoint->openSocket(backlog);
 		endpoints_.push_back(endpoint);
 	}
@@ -253,19 +259,19 @@ FCGIServer::initFastCGISubsystem() {
 
 void
 FCGIServer::handle(Endpoint *endpoint) {
-	boost::shared_ptr<ServerStopper> stopper = stopper_;
+	std::shared_ptr<ServerStopper> stopper = stopper_;
 	Logger* logger = globals_->logger();
 	while (true) {
 		try {
 			if (stopper->stopped()) {
 				return;
 			}
-			boost::shared_ptr<ThreadHolder> holder = active_thread_holder_;
+			std::shared_ptr<ThreadHolder> holder = active_thread_holder_;
 
 			Endpoint::ScopedBusyCounter busyCounter(*endpoint);
 			RequestTask task;
-			task.request = boost::shared_ptr<Request>(new Request(logger, request_cache_));
-			task.request_stream = boost::shared_ptr<RequestIOStream>(
+			task.request = std::shared_ptr<Request>(new Request(logger, request_cache_));
+			task.request_stream = std::shared_ptr<RequestIOStream>(
 				new FastcgiRequest(task.request, endpoint, logger, time_statistics_, logTimes_));
 
 			FastcgiRequest *request = dynamic_cast<FastcgiRequest*>(task.request_stream.get());
@@ -279,7 +285,7 @@ FCGIServer::handle(Endpoint *endpoint) {
 			holder = active_thread_holder_;
 			if (status < 0) {
 				throw std::runtime_error("failed to accept fastcgi request: " +
-					boost::lexical_cast<std::string>(status));
+					std::to_string(status));
 			}
 			busyCounter.increment();
 
@@ -319,7 +325,7 @@ FCGIServer::handleRequest(RequestTask task) {
 
 void
 FCGIServer::monitor() {
-    boost::shared_ptr<ServerStopper> stopper = stopper_;
+    std::shared_ptr<ServerStopper> stopper = stopper_;
 	while (true) {
 		if (stopper->stopped()) {
 			return;
@@ -415,7 +421,7 @@ FCGIServer::getServerInfo() const {
 
 		std::stringstream s;
 		s << "<endpoint_pools>\n";
-		for (std::vector<boost::shared_ptr<Endpoint> >::const_iterator i = endpoints_.begin();
+		for (auto i = endpoints_.begin();
 			 i != endpoints_.end();
 			 ++i) {
 			s << "<endpoint"
@@ -427,7 +433,7 @@ FCGIServer::getServerInfo() const {
 		s << "</endpoint_pools>\n";
 
 		const Globals::ThreadPoolMap& pools = globals_->pools();
-		for (Globals::ThreadPoolMap::const_iterator i = pools.begin(); i != pools.end(); ++i) {
+		for (auto i = pools.begin(); i != pools.end(); ++i) {
 			const RequestsThreadPool *pool = i->second.get();
 			ThreadPoolInfo info = pool->getInfo();
 			uint64_t goodTasks = info.goodTasksCounter;

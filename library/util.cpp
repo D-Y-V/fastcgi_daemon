@@ -94,7 +94,7 @@ StringUtils::urldecode(DataBuffer data) {
 	std::string result;
 	result.reserve(data.size());
 	for (DataBuffer::SegmentIterator it = data.begin(); it != data.end(); ++it) {
-		std::pair<char*, boost::uint64_t> chunk = *it;
+		std::pair<char*, std::uint64_t> chunk = *it;
 		urldecode(Range(chunk.first, chunk.first + chunk.second), result);
 	}
 	return result;

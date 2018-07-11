@@ -20,13 +20,13 @@
 
 #include <string>
 #include <sstream>
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
 
 namespace fastcgi {
 
 class Request;
 
-class RequestStream : private boost::noncopyable {
+class RequestStream  {
 public:
 	RequestStream(Request *req);
 	virtual ~RequestStream();
@@ -44,6 +44,10 @@ public:
 private:
 	Request *request_;
 	std::stringstream stream_;
+private:
+	RequestStream(const RequestStream &) = delete;
+	RequestStream& operator = (const RequestStream &) = delete;
+
 };
 
 } // namespace fastcgi

@@ -21,12 +21,12 @@
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
 #include <fastcgi2/helpers.h>
 
 namespace fastcgi {
 
-class XmlUtils : private boost::noncopyable {
+class XmlUtils  {
 public:
 	XmlUtils();
 	virtual ~XmlUtils();
@@ -35,6 +35,12 @@ public:
 	static const char* value(xmlAttrPtr node);
 	static const char* value(xmlNodePtr node);
 	static const char* attrValue(xmlNodePtr node, const char *name);
+
+private:
+	XmlUtils(const XmlUtils&) = delete;
+	XmlUtils&operator=(const XmlUtils&) = delete;
+
+
 };
 
 struct XmlDocCleaner {

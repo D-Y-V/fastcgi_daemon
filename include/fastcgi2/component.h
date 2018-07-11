@@ -19,14 +19,15 @@
 #pragma once
 
 #include <string>
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
+#include <memory>
 
 namespace fastcgi {
 
 class Config;
 class Component;
 
-class ComponentContext : private boost::noncopyable {
+class ComponentContext  {
 public:
 	virtual ~ComponentContext();
 
@@ -40,9 +41,14 @@ public:
 
 protected:
 	virtual Component* findComponentInternal(const std::string &name) const = 0;
+
+private:
+    //ComponentContext(const ComponentContext&) = delete; //TODO tempporary allow default constructor
+    ComponentContext&operator=(const ComponentContext&) = delete;
+
 };
 
-class Component : private boost::noncopyable {
+class Component  {
 public:
 	Component(ComponentContext *context);
 	virtual ~Component();
@@ -56,6 +62,9 @@ protected:
 
 private:
 	ComponentContext *context_;
+
+	Component(const Component&) = delete;
+    Component&operator=(const Component&) = delete;
 };
 
 } // namespace fastcgi

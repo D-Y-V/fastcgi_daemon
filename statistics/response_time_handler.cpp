@@ -6,7 +6,9 @@
 
 #include <sys/time.h>
 
-#include <boost/lexical_cast.hpp>
+//#include <boost/lexical_cast.hpp>
+
+#include <sstream>
 
 #ifdef HAVE_DMALLOC_H
 #include <dmalloc.h>
@@ -14,34 +16,34 @@
 
 namespace fastcgi {
 
-CounterData::CounterData() : min_(std::numeric_limits<boost::uint64_t>::max()),
+CounterData::CounterData() : min_(std::numeric_limits<std::uint64_t>::max()),
 	max_(0), total_(0), hits_(0)
 {}
 
 void
-CounterData::add(boost::uint64_t time) {
+CounterData::add(std::uint64_t time) {
 	total_ += time;
 	++hits_;
 	min_ = std::min(min_, time);
 	max_ = std::max(max_, time);
 }
 
-boost::uint64_t
+std::uint64_t
 CounterData::min() const {
 	return min_;
 }
 
-boost::uint64_t
+std::uint64_t
 CounterData::max() const {
 	return max_;
 }
 
-boost::uint64_t
+std::uint64_t
 CounterData::avg() const {
 	return hits_ ? total_/hits_ : 0;
 }
 
-boost::uint64_t
+std::uint64_t
 CounterData::hits() const {
 	return hits_;
 }
@@ -94,12 +96,12 @@ ResponseTimeHandler::handleRequest(Request *req, HandlerContext *handlerContext)
 }
 
 void
-ResponseTimeHandler::add(const std::string &handler, unsigned short status, boost::uint64_t time) {
+ResponseTimeHandler::add(const std::string &handler, unsigned short status, std::uint64_t time) {
 	std::lock_guard<std::mutex> lock(mutex_);
 	CounterMapType& handle = data_[handler];
 	CounterMapType::iterator it = handle.find(status);
 	if (handle.end() == it) {
-		boost::shared_ptr<CounterData> counter(new CounterData);
+		std::shared_ptr<CounterData> counter(new CounterData);
 		counter->add(time);
 		handle.insert(std::make_pair(status, counter));
 	}

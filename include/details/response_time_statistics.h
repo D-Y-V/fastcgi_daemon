@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <boost/cstdint.hpp>
+//#include <boost/cstdint.hpp>
 
 #include <string>
 
@@ -29,7 +29,7 @@ public:
     ResponseTimeStatistics();
     virtual ~ResponseTimeStatistics();
 
-    virtual void add(const std::string &handler, unsigned short status, boost::uint64_t time) = 0;
+    virtual void add(const std::string &handler, unsigned short status, std::uint64_t time) = 0;
 };
 
 } // namespace fastcgi

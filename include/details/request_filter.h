@@ -18,10 +18,10 @@
 
 #pragma once
 
-#include <boost/regex.hpp>
+//#include <boost/regex.hpp>
 
 #include <string>
-
+#include <regex>
 namespace fastcgi {
 
 class Request;
@@ -38,7 +38,7 @@ public:
 
     bool check(const std::string &value) const;
 private:
-    boost::regex regex_;
+    std::regex regex_;
 };
 
 class UrlFilter : public RequestFilter {

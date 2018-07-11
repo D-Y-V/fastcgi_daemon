@@ -24,14 +24,14 @@
 #include <memory>
 #include <iosfwd>
 
-#include <boost/shared_ptr.hpp>
-#include <boost/utility.hpp>
+//#include <boost/shared_ptr.hpp>
+//#include <boost/utility.hpp>
 
 namespace fastcgi {
 
 typedef std::ostream& (*HelpFunc)(std::ostream &stream);
 
-class Config : private boost::noncopyable {
+class Config  {
 public:
 	Config();
 	virtual ~Config();
@@ -44,19 +44,24 @@ public:
 
 	virtual void subKeys(const std::string &value, std::vector<std::string> &v) const = 0;
 
-	static std::auto_ptr<Config> create(const char *file);
-	static std::auto_ptr<Config> create(int &argc, char *argv[], HelpFunc func = NULL);
+	static std::unique_ptr<Config> create(const char *file);
+	static std::unique_ptr<Config> create(int &argc, char *argv[], HelpFunc func = NULL);
 
 	const std::string& filename() const;
 
 protected:
 	void setFilename(const std::string &name);
 
-private:
-	Config(const Config &);
-	Config& operator = (const Config &);
+//private:
+//	Config(const Config &);
+//	Config& operator = (const Config &);
 
 	std::string filename_;
+
+private:
+	Config(const Config&) = delete;
+	Config&operator=(const Config&) = delete;
+
 };
 
 } // namespace fastcgi

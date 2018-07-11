@@ -34,7 +34,7 @@
 #include "details/range.h"
 #include "details/functors.h"
 
-#include <boost/cstdint.hpp>
+//#include <boost/cstdint.hpp>
 
 #include <set>
 #include <map>
@@ -82,7 +82,7 @@ class Request;
 class RequestCache;
 class RequestIOStream;
 
-class RequestImpl : private boost::noncopyable {
+class RequestImpl  {
 public:
 	RequestImpl(Logger *logger, RequestCache *cache);
 	~RequestImpl();
@@ -164,25 +164,25 @@ private:
 	void sendHeadersInternal();
 	bool disablePostParams() const;
 
-	boost::uint64_t serializeEnv(DataBuffer &buffer, boost::uint64_t add_size);
-	boost::uint64_t serializeInt(DataBuffer &buffer, boost::uint64_t pos, boost::uint64_t val);
-	boost::uint64_t serializeString(DataBuffer &buffer, boost::uint64_t pos, const std::string &val);
-	boost::uint64_t serializeBuffer(DataBuffer &buffer, boost::uint64_t pos, const DataBuffer &src);
-	boost::uint64_t serializeFiles(DataBuffer &buffer, boost::uint64_t pos);
-	boost::uint64_t serializeArgs(DataBuffer &buffer, boost::uint64_t pos);
+	std::uint64_t serializeEnv(DataBuffer &buffer, std::uint64_t add_size);
+	std::uint64_t serializeInt(DataBuffer &buffer, std::uint64_t pos, std::uint64_t val);
+	std::uint64_t serializeString(DataBuffer &buffer, std::uint64_t pos, const std::string &val);
+	std::uint64_t serializeBuffer(DataBuffer &buffer, std::uint64_t pos, const DataBuffer &src);
+	std::uint64_t serializeFiles(DataBuffer &buffer, std::uint64_t pos);
+	std::uint64_t serializeArgs(DataBuffer &buffer, std::uint64_t pos);
 
-	boost::uint64_t parseInt(DataBuffer buffer, boost::uint64_t pos, boost::uint64_t &val);
-	boost::uint64_t parseString(DataBuffer buffer, boost::uint64_t pos, std::string &val);
-	boost::uint64_t parseHeaders(DataBuffer buffer, boost::uint64_t pos);
-	boost::uint64_t parseCookies(DataBuffer buffer, boost::uint64_t pos);
-	boost::uint64_t parseVars(DataBuffer buffer, boost::uint64_t pos);
-	boost::uint64_t parseBody(DataBuffer buffer, boost::uint64_t pos);
-	boost::uint64_t parseFiles(DataBuffer buffer, boost::uint64_t pos);
-	boost::uint64_t parseArgs(DataBuffer buffer, boost::uint64_t pos);
+	std::uint64_t parseInt(DataBuffer buffer, std::uint64_t pos, std::uint64_t &val);
+	std::uint64_t parseString(DataBuffer buffer, std::uint64_t pos, std::string &val);
+	std::uint64_t parseHeaders(DataBuffer buffer, std::uint64_t pos);
+	std::uint64_t parseCookies(DataBuffer buffer, std::uint64_t pos);
+	std::uint64_t parseVars(DataBuffer buffer, std::uint64_t pos);
+	std::uint64_t parseBody(DataBuffer buffer, std::uint64_t pos);
+	std::uint64_t parseFiles(DataBuffer buffer, std::uint64_t pos);
+	std::uint64_t parseArgs(DataBuffer buffer, std::uint64_t pos);
 
-	boost::uint64_t bodySerializedSize();
-	boost::uint64_t filesSerializedSize();
-	boost::uint64_t argsSerializedSize();
+	std::uint64_t bodySerializedSize();
+	std::uint64_t filesSerializedSize();
+	std::uint64_t argsSerializedSize();
 
 private:
 	bool headers_sent_;
@@ -201,6 +201,13 @@ private:
 
 	Logger* logger_;
 	RequestCache* cache_;
+
+
+private:
+	RequestImpl(const RequestImpl &) = delete;
+	RequestImpl& operator = (const RequestImpl &) = delete;
+
+
 };
 
 } // namespace xscript
