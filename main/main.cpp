@@ -5,7 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include <errno.h>
+#include <cerrno>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -61,15 +61,15 @@ daemonize() {
 
 	const char *devnull = "/dev/null";
 	stdin = fopen(devnull, "a+");
-	if (stdin == NULL) {
+	if (stdin == nullptr) {
 		return false;
 	}
 	stdout = fopen(devnull, "w");
-	if (stdout == NULL) {
+	if (stdout == nullptr) {
 		return false;
 	}
 	stderr = fopen(devnull, "w");
-	if (stderr == NULL) {
+	if (stderr == nullptr) {
 		return false;
 	}
 	return true;
@@ -77,7 +77,7 @@ daemonize() {
 
 void
 signalHandler(int signo) {
-	if ((SIGINT == signo || SIGTERM == signo) && ::server != NULL) {
+	if ((SIGINT == signo || SIGTERM == signo) && ::server != nullptr) {
 		server->stop();
 	}
 }   

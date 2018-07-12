@@ -10,7 +10,7 @@ class Endpoint {
 public:
 	class ScopedBusyCounter {
 	public:
-		ScopedBusyCounter(Endpoint &endpoint);
+		explicit ScopedBusyCounter(Endpoint &endpoint);
 		~ScopedBusyCounter();
 		void increment();
 		void decrement();

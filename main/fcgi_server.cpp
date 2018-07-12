@@ -55,7 +55,7 @@ namespace fastcgi
 
 FCGIServer::FCGIServer(std::shared_ptr<Globals> globals) :
 	globals_(globals), stopper_(new ServerStopper()), active_thread_holder_(new char(0)),
-	monitorSocket_(-1), request_cache_(NULL), time_statistics_(NULL), status_(NOT_INITED)
+	monitorSocket_(-1), request_cache_(nullptr), time_statistics_(nullptr), status_(NOT_INITED)
 {}
 
 FCGIServer::~FCGIServer() {
@@ -171,7 +171,7 @@ FCGIServer::initMonitorThread() {
 		throw std::runtime_error("Cannot reuse monitor port: " + std::to_string(errno));
 	}
 
-	sockaddr_in addr;
+	sockaddr_in addr{};
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(globals_->config()->asInt("/fastcgi/daemon/monitor_port"));
 	addr.sin_addr.s_addr = INADDR_ANY;
@@ -221,9 +221,7 @@ FCGIServer::initTimeStatistics() {
 
 void
 FCGIServer::createWorkThreads() {
-	for (std::vector<std::shared_ptr<Endpoint> >::iterator i = endpoints_.begin();
-		 i != endpoints_.end();
-		 ++i) {
+	for (std::vector<std::shared_ptr<Endpoint> >::iterator i = endpoints_.begin();  i != endpoints_.end(); ++i) {
 		std::function<void()> f = std::bind(&FCGIServer::handle, this, i->get());
 		for (unsigned short t = 0; t < (*i)->threads(); ++t) {
 			//globalPool_.create_thread(f);
@@ -332,7 +330,7 @@ FCGIServer::monitor() {
 		}
 		int s = -1;
 		try {
-			s = accept(monitorSocket_, NULL, NULL);
+			s = accept(monitorSocket_, nullptr, nullptr);
 			if (stopper->stopped()) {
 				return;
 			}
@@ -341,7 +339,7 @@ FCGIServer::monitor() {
 			}
 
 			char buf[80];
-			int rlen = read(s, buf, sizeof(buf));
+			ssize_t rlen = read(s, buf, sizeof(buf));
 			if (rlen <= 0) {
 				close(s);
 				continue;
@@ -421,24 +419,22 @@ FCGIServer::getServerInfo() const {
 
 		std::stringstream s;
 		s << "<endpoint_pools>\n";
-		for (auto i = endpoints_.begin();
-			 i != endpoints_.end();
-			 ++i) {
+		for (const auto &endpoint : endpoints_) {
 			s << "<endpoint"
-				<< " socket=\"" << (*i)->toString() << "\""
-				<< " threads=\"" << (*i)->threads() << "\""
-				<< " busy=\"" << (*i)->getBusyCounter() << "\""
+				<< " socket=\"" << endpoint->toString() << "\""
+				<< " threads=\"" << endpoint->threads() << "\""
+				<< " busy=\"" << endpoint->getBusyCounter() << "\""
 				<< "/>\n";
 		}
 		s << "</endpoint_pools>\n";
 
 		const Globals::ThreadPoolMap& pools = globals_->pools();
-		for (auto i = pools.begin(); i != pools.end(); ++i) {
-			const RequestsThreadPool *pool = i->second.get();
+		for (const auto &i : pools) {
+			const RequestsThreadPool *pool = i.second.get();
 			ThreadPoolInfo info = pool->getInfo();
 			uint64_t goodTasks = info.goodTasksCounter;
 			uint64_t badTasks = info.badTasksCounter;
-			s << "<pool name=\"" << i->first << "\""
+			s << "<pool name=\"" << i.first << "\""
 				<< " threads=\"" << info.threadsNumber << "\""
 				<< " busy=\"" << info.busyThreadsCounter << "\""
 				<< " queue=\"" << info.queueLength << "\""

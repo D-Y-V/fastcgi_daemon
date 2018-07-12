@@ -68,8 +68,9 @@ protected:
 	enum Status {NOT_INITED, LOADING, RUNNING};
 
 public:
-	FCGIServer(std::shared_ptr<Globals> globals);
-	virtual ~FCGIServer();
+	explicit FCGIServer(std::shared_ptr<Globals> globals);
+
+	~FCGIServer() override;
 
 	static void writePid(const Config& config);
 	void start();
@@ -77,9 +78,9 @@ public:
 	void join();
 
 private:
-	virtual const Globals* globals() const;
-	virtual Logger* logger() const;
-	virtual void handleRequest(RequestTask task);
+	const Globals* globals() const override;
+	Logger* logger() const override;
+	void handleRequest(RequestTask task) override;
 	void handle(Endpoint *endpoint);
 	void monitor();
 
